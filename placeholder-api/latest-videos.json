@@ -1,0 +1,62 @@
+[
+  {
+    "id": "0",
+    "title": "Diagonal Smile",
+    "sub-title": "Lorem ipsum dolor sit amet, consect adipiscing elit, sed do eiusmod.",
+    "author": "Phillip Massey",
+    "author_pic_url": "images/profile_1.jpg",
+    "thumb_url": "images/thumbnail_1.jpg",
+    "star": "4",
+    "duration": "8 min"
+  },
+  {
+    "id": "1",
+    "title": "Sad Smile",
+    "sub-title": "Lorem ipsum dolor sit amet, consect adipiscing elit, sed do eiusmod.",
+    "author": "Nannie Lawrence",
+    "author_pic_url": "images/profile_2.jpg",
+    "thumb_url": "images/thumbnail_2.jpg",
+    "star": "5",
+    "duration": "14 min"
+  },
+  {
+    "id": "2",
+    "title": "Natural Smile",
+    "sub-title": "Lorem ipsum dolor sit amet, consect adipiscing elit, sed do eiusmod.",
+    "author": "Bruce Walters",
+    "author_pic_url": "images/profile_3.jpg",
+    "thumb_url": "images/thumbnail_3.jpg",
+    "star": "2",
+    "duration": "21 min"
+  },
+  {
+    "id": "3",
+    "title": "Happy Smile",
+    "sub-title": "Lorem ipsum dolor sit amet, consect adipiscing elit, sed do eiusmod.",
+    "author": "Phillip Massey",
+    "author_pic_url": "images/profile_1.jpg",
+    "thumb_url": "images/thumbnail_4.jpg",
+    "star": "4",
+    "duration": "24 min"
+  },
+  {
+    "id": "4",
+    "title": "Non-expressive Smile",
+    "sub-title": "Lorem ipsum dolor sit amet, consect adipiscing elit, sed do eiusmod.",
+    "author": "Nannie Lawrence",
+    "author_pic_url": "images/profile_2.jpg",
+    "thumb_url": "images/thumbnail_1.jpg",
+    "star": "3",
+    "duration": "9 min"
+  },
+  {
+    "id": "5",
+    "title": "Cry and Smile",
+    "sub-title": "Lorem ipsum dolor sit amet, consect adipiscing elit, sed do eiusmod.",
+    "author": "Henry Hughes",
+    "author_pic_url": "images/profile_4.jpg",
+    "thumb_url": "images/thumbnail_4.jpg",
+    "star": "5",
+    "duration": "18 min"
+  }
+]
