@@ -86,15 +86,19 @@ Daniel Stelljes: [Zytronium](https://github.com/Zytronium)
 ----
 
 ### ✅ Tasks checklist:
-- [X] ​0. README
-- [ ] ​1. Homepage - quotes
-- [ ] ​2. Homepage - popular tutorials
-- [ ] ​3. Homepage - latest videos
-- [ ] ​4. Pricing - quotes
-- [ ] ​5. Courses
-- [ ] ​6. Host to Pages!
+- [X] ​0. README (5/5 pts)
+- [ ] ​1. Homepage - quotes (0/15 pts)
+- [ ] ​2. Homepage - popular tutorials (0/20 pts)
+- [ ] ​3. Homepage - latest videos (0/20 pts)
+- [ ] ​4. Pricing - quotes (0/10 pts)
+- [ ] ​5. Courses (0/25 pts)
+- [X] ​6. Host to Pages! (5/5 pts)
 
 
-- [ ] **Everything Done ✓**
+- [ ] **Everything Done ✓** (10/100 pts) - 10%
+
+>### Progress Goals:
+><strong>Friday: 65% (task 3)</strong>  
+<em style="color: grey;">Saturday/Sunday: 100% (task 6)</em>
 
 ---
