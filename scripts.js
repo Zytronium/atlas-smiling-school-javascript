@@ -24,12 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
             />
           </div>
           <div class="col-12 col-sm-7 offset-sm-2 col-lg-9 offset-lg-0">
-                    <div class="quote-text">
-                      <p class="text-white">${quote.text}</p>
-                      <h4 class="text-white font-weight-bold">${quote.name}</h4>
-                      <span class="text-white">${quote.title}</span>
-                    </div>
-                  </div>
+            <div class="quote-text">
+              <p class="text-white">${quote.text}</p>
+              <h4 class="text-white font-weight-bold">${quote.name}</h4>
+              <span class="text-white">${quote.title}</span>
+            </div>
+          </div>
         </div>
         `;
 
@@ -39,5 +39,11 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch((error) => {
       console.error('Error loading the quotes: ', error);
       loader.remove();
+
+      const errorMessage = document.createElement('p');
+
+      errorMessage.innerHTML = `:(<br>Sorry, something went wrong.<br>Please try again later.`;
+      errorMessage.className = 'text-danger text-center h4';
+      quotesCarousel.appendChild(errorMessage);
     });
 });
