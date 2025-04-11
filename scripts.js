@@ -1,29 +1,27 @@
-document.addEventListener('DOMContentLoaded', () => {
+$(document).ready(() => {
   /* APIs (for placeholders while the real one is down) */
   const quotesAPI = 'placeholder-api/quotes.json' // online: 'https://smileschool-api.hbtn.info/quotes'
   const tutorialsAPI = 'placeholder-api/popular-tutorials.json' // online: 'https://smileschool-api.hbtn.info/popular-tutorials'
   const videosAPI = 'placeholder-api/latest-videos.json' // online: 'https://smileschool-api.hbtn.info/latest-videos'
   /* Quotes Loading Vars */
-  const quotesCarousel = document.getElementById('carousel-quotes');
-  const qLoader = document.getElementById('quotes-loader');
+  const quotesCarousel = $('#carousel-quotes');
+  const qLoader = $('#quotes-loader');
   /* Tutorials Loading Vars */
-  const tutorialsCarousel = document.getElementById('carousel-tutorials');
-  const tLoader = document.getElementById('tutorials-loader');
+  const tutorialsCarousel = $('#carousel-tutorials');
+  const tLoader = $('#tutorials-loader');
 
   /* Quotes Loader */
-  fetch(quotesAPI)
-    .then((response) => response.json())
-    .then((data) => {
+  $.ajax({
+    method: 'GET',
+    url: quotesAPI,
+    dataType: 'json',
+    success: function (data) {
       qLoader.remove();
 
       data.forEach((quote, index) => {
-        const item = document.createElement('div');
+        const item = $(`<div class="carousel-item${index === 0 ? ' active' : ''}">`);
 
-        item.className = "carousel-item"
-        if (index === 0)
-          item.classList.add("active");
-
-        item.innerHTML = `
+        item.html(`
         <div class="row mx-auto align-items-center">
           <div class="col-12 col-sm-2 col-lg-2 offset-lg-1 text-center">
             <img
@@ -40,36 +38,33 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
         </div>
-        `;
+        `);
 
-        quotesCarousel.appendChild(item);
+        quotesCarousel.append(item);
       });
-    })
-    .catch((error) => {
+    },
+    error: function (xhr, status, error) {
       console.error('Error loading the quotes: ', error);
       qLoader.remove();
 
-      const errorMessage = document.createElement('p');
+      const errorMessage = $(`<p class="text-danger text-center h4">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
 
-      errorMessage.innerHTML = `:(<br>Sorry, something went wrong.<br>Please try again later.`;
-      errorMessage.className = 'text-danger text-center h4';
-      quotesCarousel.appendChild(errorMessage);
-    });
+      quotesCarousel.append(errorMessage);
+    }
+  })
 
   /* Tutorials Loader */
-  fetch(tutorialsAPI)
-    .then((response) => response.json())
-    .then((data) => {
+  $.ajax({
+    method: 'GET',
+    url: tutorialsAPI,
+    dataType: 'json',
+    success: function (data) {
       tLoader.remove();
 
       data.forEach((tutorial, index) => {
-        const item = document.createElement('div');
+        const item = $(`<div class="carousel-item${index === 0 ? ' active' : ''}">`);
 
-        item.className = "carousel-item"
-        if (index === 0)
-          item.classList.add("active");
-
-        item.innerHTML = `
+        item.html(`
         <div class="row align-items-center mx-auto">
           <div
             class="col-12 col-sm-6 col-md-6 col-lg-3 d-flex justify-content-center justify-content-md-end justify-content-lg-center"
@@ -120,19 +115,20 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
         </div>
-        `;
+        `);
 
-        tutorialsCarousel.appendChild(item);
+        tutorialsCarousel.append(item);
       });
-    })
-    .catch((error) => {
+
+    },
+    error: function (xhr, status, error) {
       console.error('Error loading the tutorials: ', error);
       tLoader.remove();
 
-      const errorMessage = document.createElement('p');
+      const errorMessage = $(`<p class="text-danger text-center h4">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
 
-      errorMessage.innerHTML = `:(<br>Sorry, something went wrong.<br>Please try again later.`;
-      errorMessage.className = 'text-danger text-center h4';
-      tutorialsCarousel.appendChild(errorMessage);
-    });
+      tutorialsCarousel.append(errorMessage);
+
+    }
+  });
 });
