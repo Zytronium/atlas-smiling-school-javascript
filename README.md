@@ -102,3 +102,5 @@ Daniel Stelljes: [Zytronium](https://github.com/Zytronium)
 <em style="color: grey;">Saturday/Sunday: 100% (task 6)</em>
 
 ---
+
+[Click here to view on GitHub Pages.](https://zytronium.github.io/atlas-smiling-school-javascript/homepage)
