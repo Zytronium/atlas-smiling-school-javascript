@@ -905,12 +905,22 @@
 /* Everything below here is new. */
 
 .loader {
-  border: 10px solid #f3f3f3;
-  border-top: 10px solid #C271FF;
+  border: 10px solid white;
+  border-top: 10px solid transparent;
   border-radius: 50%;
   width: 80px;
   height: 80px;
-  animation: spin 0.25s linear infinite;
+  animation: spin 0.3333s linear infinite;
+  margin: auto;
+}
+
+.loader2 {
+  border: 10px solid #C271FF;
+  border-top: 10px solid transparent;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 0.3333s linear infinite;
   margin: auto;
 }
 
