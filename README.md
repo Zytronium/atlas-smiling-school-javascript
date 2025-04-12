@@ -98,8 +98,10 @@ Daniel Stelljes: [Zytronium](https://github.com/Zytronium)
 - [ ] **Everything Done ✓** (25/100 pts) - 25%
 
 >### Progress Goals:
-><strong>Friday: 65% (task 3)</strong>  
-<em style="color: grey;">Saturday/Sunday: 100% (task 6)</em>
+>Friday: 25% (task 1-2) ✓  
+<strong>Saturday/Sunday: 50-70% (task 2-3)</strong>  
+<em style="color: grey;">Monday: 80-100% (task 5-6)</em>  
+<em style="color: grey;">Tuesday: 100% (task 6)</em>  
 
 ---
 
