@@ -1,8 +1,15 @@
 $(document).ready(() => {
-    /* APIs (for placeholders while the real one is down) */
-    const quotesAPI = 'https://zytronium.github.io/smileschool-api-placeholder/quotes.json' // original: 'https://smileschool-api.hbtn.info/quotes'
-    const tutorialsAPI = 'https://zytronium.github.io/smileschool-api-placeholder/popular-tutorials.json' // original: 'https://smileschool-api.hbtn.info/popular-tutorials'
-    const videosAPI = 'https://zytronium.github.io/smileschool-api-placeholder/latest-videos.json' // original: 'https://smileschool-api.hbtn.info/latest-videos'
+    /* API Endpoints */
+    const quotesAPI ='https://smileschool-api.hbtn.info/quotes'
+    const tutorialsAPI = 'https://smileschool-api.hbtn.info/popular-tutorials'
+    const videosAPI ='https://smileschool-api.hbtn.info/latest-videos'
+    const coursesAPI = 'https://smileschool-api.hbtn.info/courses'
+    /* Fallback API Endpoints (in case the API goes down again) */
+    const fallbackQuotesAPI = 'https://zytronium.github.io/smileschool-api-placeholder/quotes.json'
+    const fallbackTutorialsAPI = 'https://zytronium.github.io/smileschool-api-placeholder/popular-tutorials.json'
+    const fallbackVideosAPI = 'https://zytronium.github.io/smileschool-api-placeholder/latest-videos.json'
+    const fallbackCoursesAPI = 'https://zytronium.github.io/smileschool-api-placeholder/courses.json'
+
     /* Quotes Loading Vars */
     const quotesCarousel = $('#carousel-quotes');
     const qLoader = $('#quotes-loader');
@@ -110,7 +117,7 @@ $(document).ready(() => {
     /* Quotes Loader */
     $.ajax({
         method: 'GET',
-        url: quotesAPI,
+        url: fallbackQuotesAPI,
         dataType: 'json',
         success: function (data) {
             qLoader.remove();
