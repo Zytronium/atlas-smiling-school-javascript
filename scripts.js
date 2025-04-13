@@ -1,14 +1,14 @@
 $(document).ready(() => {
     /* API Endpoints */
-    const quotesAPI ='https://smileschool-api.hbtn.info/quotes'
-    const tutorialsAPI = 'https://smileschool-api.hbtn.info/popular-tutorials'
-    const videosAPI ='https://smileschool-api.hbtn.info/latest-videos'
-    const coursesAPI = 'https://smileschool-api.hbtn.info/courses'
+    const quotesAPI ='https://smileschool-api.hbtn.info/quotes';
+    const tutorialsAPI = 'https://smileschool-api.hbtn.info/popular-tutorials';
+    const videosAPI ='https://smileschool-api.hbtn.info/latest-videos';
+    const coursesAPI = 'https://smileschool-api.hbtn.info/courses';
     /* Fallback API Endpoints (in case the API goes down again) */
-    const fallbackQuotesAPI = 'https://zytronium.github.io/smileschool-api-placeholder/quotes.json'
-    const fallbackTutorialsAPI = 'https://zytronium.github.io/smileschool-api-placeholder/popular-tutorials.json'
-    const fallbackVideosAPI = 'https://zytronium.github.io/smileschool-api-placeholder/latest-videos.json'
-    const fallbackCoursesAPI = 'https://zytronium.github.io/smileschool-api-placeholder/courses.json'
+    const fallbackQuotesAPI = 'https://zytronium.github.io/smileschool-api-placeholder/quotes.json';
+    const fallbackTutorialsAPI = 'https://zytronium.github.io/smileschool-api-placeholder/popular-tutorials.json';
+    const fallbackVideosAPI = 'https://zytronium.github.io/smileschool-api-placeholder/latest-videos.json';
+    const fallbackCoursesAPI = 'https://zytronium.github.io/smileschool-api-placeholder/courses.json';
 
     /* Quotes Loading Vars */
     const quotesCarousel = $('#carousel-quotes');
@@ -58,13 +58,9 @@ $(document).ready(() => {
             }
             const clonesToAdd = cardsPerSlide - 1;
 
-            console.log(`carousel ID: ${carouselInner[0].id}`);
-            console.log($(`#${carouselInner[0].id} .carousel-item`));
-
             $(`#${carouselInner[0].id} .carousel-item`).each((index, item) => {
                 // Select the row of cards
                 const $cardsRow = $(item).find('.row.align-items-center.mx-auto');
-                console.log($cardsRow);
 
                 // Loop to add the clones.
                 for (let i = 1; i <= clonesToAdd; i++) {
@@ -224,7 +220,7 @@ $(document).ready(() => {
                 tutorialsCarousel.append(item);
             });
 
-            addClones(tutorialsCarousel)
+            addClones(tutorialsCarousel);
         },
         error: function (xhr, status, error) {
             console.error('Error loading the tutorials: ', error);
