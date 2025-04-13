@@ -1,8 +1,8 @@
 $(document).ready(() => {
     /* APIs (for placeholders while the real one is down) */
-    const quotesAPI = 'placeholder-api/quotes.json' // online: 'https://smileschool-api.hbtn.info/quotes'
-    const tutorialsAPI = 'placeholder-api/popular-tutorials.json' // online: 'https://smileschool-api.hbtn.info/popular-tutorials'
-    const videosAPI = 'placeholder-api/latest-videos.json' // online: 'https://smileschool-api.hbtn.info/latest-videos'
+    const quotesAPI = 'https://zytronium.github.io/smileschool-api-placeholder/quotes.json' // original: 'https://smileschool-api.hbtn.info/quotes'
+    const tutorialsAPI = 'https://zytronium.github.io/smileschool-api-placeholder/popular-tutorials.json' // original: 'https://smileschool-api.hbtn.info/popular-tutorials'
+    const videosAPI = 'https://zytronium.github.io/smileschool-api-placeholder/latest-videos.json' // original: 'https://smileschool-api.hbtn.info/latest-videos'
     /* Quotes Loading Vars */
     const quotesCarousel = $('#carousel-quotes');
     const qLoader = $('#quotes-loader');
