@@ -17,10 +17,27 @@ $(document).ready(() => {
   const tCarousel = $('#carouselExampleControls2')
   const tutorialsCarouselInner = $('#carousel-tutorials');
   const tLoader = $('#tutorials-loader');
+  let tutorialsLoaded = 0;
+  let numbTutorials;
   /* Videos Loading Vars */
   const vCarousel = $('#carouselExampleControls3')
   const videosCarouselInner = $('#carousel-videos');
   const vLoader = $('#videos-loader');
+  let videosLoaded = 0;
+  let numbVideos;
+
+
+  getDataLength(tutorialsAPI).then((totalItems) => {
+    numbTutorials = totalItems;
+  }).catch(function (error) {
+    console.error("Error getting data length:", error);
+  });
+
+  getDataLength(videosAPI).then((totalItems) => {
+    numbVideos = totalItems;
+  }).catch(function (error) {
+    console.error("Error getting data length:", error);
+  });
 
   function getCardWidth(carouselInner) {
     return carouselInner.find('.card').outerWidth(true);
@@ -88,7 +105,7 @@ $(document).ready(() => {
   }
 
   function addClones(carouselInner) {
-    const api = carouselInner[0].id === 'carousel-tutorials' ? fallbackTutorialsAPI : videosAPI;
+    const api = carouselInner[0].id === 'carousel-tutorials' ? tutorialsAPI : videosAPI;
 
     getDataLength(api).then(function (totalItems) {
       // Determine number of items per slide:
@@ -144,6 +161,19 @@ $(document).ready(() => {
 
               // Add the cloned card to the row of cards
               $cardsRow.append(newCard);
+
+              // Increment counter for number of cards loaded and check if all are done loading
+              if (carouselInner[0].id === 'carousel-tutorials') {
+                tutorialsLoaded++;
+                if (allTutorialsLoaded()) {
+                  tLoader.remove();
+                }
+              } else {
+                videosLoaded++;
+                if (allVideosLoaded()) {
+                  vLoader.remove();
+                }
+              }
             })
             .catch(function (error) {
               console.error("Error fetching clone data:", error);
@@ -153,6 +183,46 @@ $(document).ready(() => {
     }).catch(function (error) {
       console.error("Error getting data length:", error);
     });
+  }
+
+  function allTutorialsLoaded() {
+    if (typeof numbTutorials === 'number') {
+      // Determine number of items per slide:
+      // Desktop: 4 | Tablet: 2 | Mobile: 1
+      let cardsPerSlide;
+      const winWidth = $(window).width();
+      if (winWidth >= 992) {
+        cardsPerSlide = 4;
+      } else if (winWidth >= 768) {
+        cardsPerSlide = 2;
+      } else {
+        cardsPerSlide = 1;
+      }
+      return cardsPerSlide * numbTutorials === tutorialsLoaded;
+    } else {
+      console.log(numbTutorials);
+      return false;
+    }
+  }
+
+  function allVideosLoaded() {
+    if (typeof numbVideos === 'number') {
+      // Determine number of items per slide:
+      // Desktop: 4 | Tablet: 2 | Mobile: 1
+      let cardsPerSlide;
+      const winWidth = $(window).width();
+      if (winWidth >= 992) {
+        cardsPerSlide = 4;
+      } else if (winWidth >= 768) {
+        cardsPerSlide = 2;
+      } else {
+        cardsPerSlide = 1;
+      }
+      return cardsPerSlide * numbVideos === videosLoaded;
+    } else {
+      console.log(numbVideos);
+      return false;
+    }
   }
 
   /* Quotes Loader */
@@ -201,10 +271,10 @@ $(document).ready(() => {
   /* Tutorials Loader */
   $.ajax({
     method: 'GET',
-    url: fallbackTutorialsAPI,
+    url: tutorialsAPI,
     dataType: 'json',
     success: function (data) {
-      tLoader.remove();
+      // tLoader.remove();
 
       data.forEach((tutorial, index) => {
         const item = $(`<div class="carousel-item${index === 0 ? ' active' : ''}">`);
@@ -263,6 +333,7 @@ $(document).ready(() => {
                 `);
 
         tutorialsCarouselInner.append(item);
+        tutorialsLoaded++;
       });
 
       addClones(tutorialsCarouselInner);
