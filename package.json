@@ -1,0 +1,23 @@
+{
+  "name": "atlas-smiling-school-javascript",
+  "version": "1.0.0",
+  "description": "These group of web pages were coded with the help of the Boostrap Framework and based on some design models given on Figma.",
+  "main": "scripts.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zytronium/atlas-smiling-school-javascript.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zytronium/atlas-smiling-school-javascript/issues"
+  },
+  "homepage": "https://github.com/Zytronium/atlas-smiling-school-javascript#readme",
+  "dependencies": {
+    "swiper": "^11.2.6"
+  }
+}

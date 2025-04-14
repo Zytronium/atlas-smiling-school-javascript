@@ -1,3 +1,5 @@
+import Swiper from "swiper";
+
 $(document).ready(() => {
   /* API Endpoints */
   const quotesAPI = 'https://smileschool-api.hbtn.info/quotes';
@@ -103,6 +105,55 @@ $(document).ready(() => {
     });
   }
 
+  function getCardHTML (data) {
+    return $(`
+              <div class="swiper-slide">
+                <div class="card">
+                  <img src="${data.thumb_url}" class="card-img-top" alt="${data.title}" />
+                  <div class="card-img-overlay text-center">
+                    <img src="images/play.png" alt="Play" width="64px" class="align-self-center play-overlay" />
+                  </div>
+                  <div class="card-body">
+                    <h5 class="card-title font-weight-bold">${data.title}</h5>
+                    <p class="card-text text-muted">${data['sub-title']}</p>
+                    <div class="creator d-flex align-items-center">
+                      <img src="${data.author_pic_url}" alt="Creator of Video" width="30px" class="rounded-circle" />
+                      <h6 class="pl-3 m-0 main-color">${data.author}</h6>
+                    </div>
+                    <div class="info pt-3 d-flex justify-content-between">
+                      <div class="rating">
+                        ${[...Array(5)].map((_, i) => (`
+                          <img src="images/star_${i < data.star ? 'on' : 'off'}.png" alt="star" width="15px" />
+                        `)).join('')}
+                      </div>
+                      <span class="main-color">${data.duration}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `);
+  }
+
+  function initializeSwiper(carouselSelector) {
+    new Swiper(carouselSelector, {
+      slidesPerView: 1,
+      spaceBetween: 30,
+      loop: true,
+      breakpoints: {
+        768: {
+          slidesPerView: 2,
+        },
+        992: {
+          slidesPerView: 4,
+        }
+      },
+      navigation: {
+        nextEL: carouselSelector + '-next',
+        prevEL: carouselSelector + '-prev'
+      }
+    });
+  }
+
   function addClones(carouselInner) {
     const api = carouselInner[0].id === 'carousel-tutorials' ? tutorialsAPI : videosAPI;
 
@@ -131,32 +182,7 @@ $(document).ready(() => {
           getData(api, cloneIndex)
             .then(function (data) {
               // Create HTML for the clone card
-              const newCard = $(`
-                              <div class="col-12 col-sm-6 col-md-6 col-lg-3 d-flex justify-content-center justify-content-md-end justify-content-lg-center">
-                                <div class="card">
-                                  <img src="${data.thumb_url}" class="card-img-top" alt="${data.title}" />
-                                  <div class="card-img-overlay text-center">
-                                    <img src="images/play.png" alt="Play" width="64px" class="align-self-center play-overlay" />
-                                  </div>
-                                  <div class="card-body">
-                                    <h5 class="card-title font-weight-bold">${data.title}</h5>
-                                    <p class="card-text text-muted">${data['sub-title']}</p>
-                                    <div class="creator d-flex align-items-center">
-                                      <img src="${data.author_pic_url}" alt="Creator of Video" width="30px" class="rounded-circle" />
-                                      <h6 class="pl-3 m-0 main-color">${data.author}</h6>
-                                    </div>
-                                    <div class="info pt-3 d-flex justify-content-between">
-                                      <div class="rating">
-                                        ${[...Array(5)].map((_, i) => (`
-                                          <img src="images/star_${i < data.star ? 'on' : 'off'}.png" alt="star" width="15px" />
-                                        `)).join('')}
-                                      </div>
-                                      <span class="main-color">${data.duration}</span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            `);
+              const newCard = getCardHTML(data);
 
               // Add the cloned card to the row of cards
               $cardsRow.append(newCard);
