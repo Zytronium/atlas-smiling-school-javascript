@@ -30,20 +30,37 @@ $(document).ready(() => {
     if (carouselInner.is(':animated'))
       return;
 
+    const items = carouselInner.find('.carousel-item');
+    const currentIndex = items.index(items.filter('.active'));
     const cardWidth = getCardWidth(carouselInner);
     const shiftAmount = direction === 'next' ? -cardWidth : cardWidth;
+    const row = carouselInner.find('.carousel-item.active .row.align-items-center.mx-auto');
+    const newCard = $('<div class="col-12 col-sm-6 col-md-6 col-lg-3 d-flex justify-content-center justify-content-md-end justify-content-lg-center"></div>');
+    // console.log(row);
+    // row.css('background', 'red');
+
+    if (direction === 'next') {
+      const firstCard = carouselInner.find('.col-12.col-sm-6.col-md-6.col-lg-3').first();
+      console.log(firstCard);
+      newCard.html(firstCard.innerHTML);
+      // firstCard.css('background', 'blue');
+      row.append(newCard);
+    } else {
+      const lastCard = carouselInner.find('.col-12.col-sm-6.col-md-6.col-lg-3').last();
+      console.log(lastCard);
+      newCard.html(lastCard.innerHTML);
+      // lastCard.css('background', 'blue');
+      row.prepend(newCard);
+    }
+    carouselInner.css('left', `-=${shiftAmount}`);
 
     carouselInner.animate({ left: `+=${shiftAmount}` }, 500, () => {
-      if (direction === 'next') {
-        const firstCard = carouselInner.find('.card').first().closest('.col-12, .col-sm-6, .col-md-6, .col-lg-3');
-        carouselInner.find('.carousel-item').find('.row .align-items-center .mx-auto').append(firstCard);
-      } else {
-        const lastCard = carouselInner.find('.card').last().closest('.col-12, .col-sm-6, .col-md-6, .col-lg-3');
-        carouselInner.find('.carousel-item').find('.row .align-items-center .mx-auto').prepend(lastCard);
-      }
 
-      carouselInner.css('left', 0);
     });
+    items.removeClass('active');
+    items.eq((direction === 'next' ? currentIndex + 1 : currentIndex - 1 + items.length) % items.length).addClass('active');
+    carouselInner.css('left', 0);
+    newCard.remove();
   }
 
   function getData(api, index) {
