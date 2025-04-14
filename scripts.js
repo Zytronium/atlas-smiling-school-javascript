@@ -1,5 +1,3 @@
-import Swiper from "swiper";
-
 $(document).ready(() => {
   /* API Endpoints */
   const quotesAPI = 'https://smileschool-api.hbtn.info/quotes';
@@ -16,13 +14,13 @@ $(document).ready(() => {
   const quotesCarouselInner = $('#carousel-quotes');
   const qLoader = $('#quotes-loader');
   /* Tutorials Loading Vars */
-  const tCarousel = $('#carouselExampleControls2')
+  const tCarousel = $('#swiper-tutorials')
   const tutorialsCarouselInner = $('#carousel-tutorials');
   const tLoader = $('#tutorials-loader');
   let tutorialsLoaded = 0;
   let numbTutorials;
   /* Videos Loading Vars */
-  const vCarousel = $('#carouselExampleControls3')
+  const vCarousel = $('#swiper-videos')
   const videosCarouselInner = $('#carousel-videos');
   const vLoader = $('#videos-loader');
   let videosLoaded = 0;
@@ -137,7 +135,7 @@ $(document).ready(() => {
   function initializeSwiper(carouselSelector) {
     new Swiper(carouselSelector, {
       slidesPerView: 1,
-      spaceBetween: 30,
+      spaceBetween: 10,
       loop: true,
       breakpoints: {
         768: {
@@ -154,100 +152,24 @@ $(document).ready(() => {
     });
   }
 
-  function addClones(carouselInner) {
-    const api = carouselInner[0].id === 'carousel-tutorials' ? tutorialsAPI : videosAPI;
+  function loadCarousel(api, fallbackAPI, carousel, loader, swiperContainerID) {
+    $.ajax({
+      url: api,
+      method: 'GET',
+      dataType: 'json',
+      error: () => $.ajax({
+        url: fallbackAPI,
+        method: 'GET',
+        dataType: 'json'
+      })
+    }).then( (data) => {
+      loader.remove();
 
-    getDataLength(api).then(function (totalItems) {
-      // Determine number of items per slide:
-      // Desktop: 4 | Tablet: 2 | Mobile: 1
-      let cardsPerSlide;
-      const winWidth = $(window).width();
-      if (winWidth >= 992) {
-        cardsPerSlide = 4;
-      } else if (winWidth >= 768) {
-        cardsPerSlide = 2;
-      } else {
-        cardsPerSlide = 1;
-      }
-      const clonesToAdd = cardsPerSlide - 1;
-
-      $(`#${carouselInner[0].id} .carousel-item`).each((index, item) => {
-        // Select the row of cards
-        const $cardsRow = $(item).find('.row.align-items-center.mx-auto');
-
-        // Loop to add the clones.
-        for (let i = 1; i <= clonesToAdd; i++) {
-          let cloneIndex = (index + i) % totalItems;
-
-          getData(api, cloneIndex)
-            .then(function (data) {
-              // Create HTML for the clone card
-              const newCard = getCardHTML(data);
-
-              // Add the cloned card to the row of cards
-              $cardsRow.append(newCard);
-
-              // Increment counter for number of cards loaded and check if all are done loading
-              if (carouselInner[0].id === 'carousel-tutorials') {
-                tutorialsLoaded++;
-                if (allTutorialsLoaded()) {
-                  tLoader.remove();
-                }
-              } else {
-                videosLoaded++;
-                if (allVideosLoaded()) {
-                  vLoader.remove();
-                }
-              }
-            })
-            .catch(function (error) {
-              console.error("Error fetching clone data:", error);
-            });
-        }
+      data.forEach((item) => {
+        carousel.append(getCardHTML(item));
       });
-    }).catch(function (error) {
-      console.error("Error getting data length:", error);
+      initializeSwiper(`#${swiperContainerID}`);
     });
-  }
-
-  function allTutorialsLoaded() {
-    if (typeof numbTutorials === 'number') {
-      // Determine number of items per slide:
-      // Desktop: 4 | Tablet: 2 | Mobile: 1
-      let cardsPerSlide;
-      const winWidth = $(window).width();
-      if (winWidth >= 992) {
-        cardsPerSlide = 4;
-      } else if (winWidth >= 768) {
-        cardsPerSlide = 2;
-      } else {
-        cardsPerSlide = 1;
-      }
-      return cardsPerSlide * numbTutorials === tutorialsLoaded;
-    } else {
-      console.log(numbTutorials);
-      return false;
-    }
-  }
-
-  function allVideosLoaded() {
-    if (typeof numbVideos === 'number') {
-      // Determine number of items per slide:
-      // Desktop: 4 | Tablet: 2 | Mobile: 1
-      let cardsPerSlide;
-      const winWidth = $(window).width();
-      if (winWidth >= 992) {
-        cardsPerSlide = 4;
-      } else if (winWidth >= 768) {
-        cardsPerSlide = 2;
-      } else {
-        cardsPerSlide = 1;
-      }
-      return cardsPerSlide * numbVideos === videosLoaded;
-    } else {
-      console.log(numbVideos);
-      return false;
-    }
   }
 
   /* Quotes Loader */
@@ -291,181 +213,10 @@ $(document).ready(() => {
 
       quotesCarouselInner.append(errorMessage);
     }
-  })
-
+  });
   /* Tutorials Loader */
-  $.ajax({
-    method: 'GET',
-    url: tutorialsAPI,
-    dataType: 'json',
-    success: function (data) {
-      data.forEach((tutorial, index) => {
-        const item = $(`<div class="carousel-item${index === 0 ? ' active' : ''}">`);
-
-        item.html(`
-                <div class="row align-items-center mx-auto">
-                  <div
-                    class="col-12 col-sm-6 col-md-6 col-lg-3 d-flex justify-content-center justify-content-md-end justify-content-lg-center"
-                  >
-                    <div class="card">
-                      <img
-                        src="${tutorial.thumb_url}"
-                        class="card-img-top"
-                        alt="${tutorial.title}"
-                      />
-                      <div class="card-img-overlay text-center">
-                        <img
-                          src="images/play.png"
-                          alt="Play"
-                          width="64px"
-                          class="align-self-center play-overlay"
-                        />
-                      </div>
-                      <div class="card-body">
-                        <h5 class="card-title font-weight-bold">
-                          ${tutorial.title}
-                        </h5>
-                        <p class="card-text text-muted">
-                          ${tutorial['sub-title']}
-                        </p>
-                        <div class="creator d-flex align-items-center">
-                          <img
-                            src="${tutorial.author_pic_url}"
-                            alt="Creator of Video"
-                            width="30px"
-                            class="rounded-circle"
-                          />
-                          <h6 class="pl-3 m-0 main-color">${tutorial.author}</h6>
-                        </div>
-                        <div class="info pt-3 d-flex justify-content-between">
-                          <div class="rating">
-                          ${[...Array(5)].map((_, i) => (`
-                            <img
-                              src="images/star_${i < tutorial.star ? 'on' : 'off'}.png"
-                              alt="star on"
-                              width="15px"
-                              />
-                          `)).join('')}
-                          </div>
-                          <span class="main-color">${tutorial.duration}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                `);
-
-        tutorialsCarouselInner.append(item);
-        tutorialsLoaded++;
-      });
-
-      addClones(tutorialsCarouselInner);
-    },
-    error: function (xhr, status, error) {
-      console.error('Error loading the tutorials: ', error);
-      tLoader.remove();
-
-      const errorMessage = $(`<p class="text-danger text-center h4 m-auto">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
-
-      tutorialsCarouselInner.append(errorMessage);
-    }
-  });
+  loadCarousel(tutorialsAPI, fallbackTutorialsAPI, tutorialsCarouselInner, tLoader, 'swiper-tutorials');
   /* Popular Videos Loader */
-  $.ajax({
-    method: 'GET',
-    url: videosAPI,
-    dataType: 'json',
-    success: function (data) {
-      data.forEach((video, index) => {
-        const item = $(`<div class="carousel-item${index === 0 ? ' active' : ''}">`);
-
-        item.html(`
-                <div class="row align-items-center mx-auto">
-                  <div
-                    class="col-12 col-sm-6 col-md-6 col-lg-3 d-flex justify-content-center justify-content-md-end justify-content-lg-center"
-                  >
-                    <div class="card">
-                      <img
-                        src="${video.thumb_url}"
-                        class="card-img-top"
-                        alt="${video.title}"
-                      />
-                      <div class="card-img-overlay text-center">
-                        <img
-                          src="images/play.png"
-                          alt="Play"
-                          width="64px"
-                          class="align-self-center play-overlay"
-                        />
-                      </div>
-                      <div class="card-body">
-                        <h5 class="card-title font-weight-bold">
-                          ${video.title}
-                        </h5>
-                        <p class="card-text text-muted">
-                          ${video['sub-title']}
-                        </p>
-                        <div class="creator d-flex align-items-center">
-                          <img
-                            src="${video.author_pic_url}"
-                            alt="Creator of Video"
-                            width="30px"
-                            class="rounded-circle"
-                          />
-                          <h6 class="pl-3 m-0 main-color">${video.author}</h6>
-                        </div>
-                        <div class="info pt-3 d-flex justify-content-between">
-                          <div class="rating">
-                          ${[...Array(5)].map((_, i) => (`
-                            <img
-                              src="images/star_${i < video.star ? 'on' : 'off'}.png"
-                              alt="star on"
-                              width="15px"
-                              />
-                          `)).join('')}
-                          </div>
-                          <span class="main-color">${video.duration}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                `);
-
-        videosCarouselInner.append(item);
-        videosLoaded++;
-      });
-
-      addClones(videosCarouselInner);
-    },
-    error: function (xhr, status, error) {
-      console.error('Error loading the videos: ', error);
-      vLoader.remove();
-
-      const errorMessage = $(`<p class="text-danger text-center h4 m-auto">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
-
-      videosCarouselInner.append(errorMessage);
-    }
-  });
-
-  tCarousel.find('.carousel-control-next').click((event) => {
-    event.preventDefault();
-    animateCardScroll(tutorialsCarouselInner, 'next');
-  });
-
-  tCarousel.find('.carousel-control-prev').click((event) => {
-    event.preventDefault();
-    animateCardScroll(tutorialsCarouselInner, 'prev');
-  });
-
-  vCarousel.find('.carousel-control-next').click((event) => {
-    event.preventDefault();
-    animateCardScroll(videosCarouselInner, 'next');
-  });
-
-  vCarousel.find('.carousel-control-prev').click((event) => {
-    event.preventDefault();
-    animateCardScroll(videosCarouselInner, 'prev');
-  });
+  loadCarousel(videosAPI, fallbackVideosAPI, videosCarouselInner, vLoader, 'swiper-videos');
 
 });

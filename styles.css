@@ -227,6 +227,11 @@
   width: 30px;
 }
 
+.swiper-button-prev img,
+.swiper-button-next img {
+  width: 30px;
+}
+
 .quotes .carousel-control-prev.arrow-left {
   padding-right: var(--quotes-arrows-pad);
 }
@@ -319,16 +324,16 @@
   line-height: 24px;
 }
 
-.popular .carousel-control-prev,
-.popular .carousel-control-next {
+.popular .swiper-button-prev,
+.popular .swiper-button-next {
   width: 60px;
 }
 
-.popular .carousel-control-prev.arrow-left {
+.popular .swiper-button-prev.arrow-left {
   left: var(--popular-arrows-x);
 }
 
-.popular .carousel-control-next.arrow-right {
+.popular .swiper-button-next.arrow-right {
   right: var(--popular-arrows-x);
 }
 
@@ -903,15 +908,6 @@
 
 /* I'm not going to look through 900 lines of CSS and remove what's no longer needed. */
 /* Everything below here is new. */
-
-.single-card-scroll {
-  left: 0;
-  transition: none;
-}
-
-.single-card-scroll .carousel-item {
-  padding: 0;
-}
 .loader {
   border: 10px solid white;
   border-top: 10px solid transparent;
