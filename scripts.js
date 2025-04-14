@@ -1,76 +1,104 @@
 $(document).ready(() => {
-    /* API Endpoints */
-    const quotesAPI ='https://smileschool-api.hbtn.info/quotes';
-    const tutorialsAPI = 'https://smileschool-api.hbtn.info/popular-tutorials';
-    const videosAPI ='https://smileschool-api.hbtn.info/latest-videos';
-    const coursesAPI = 'https://smileschool-api.hbtn.info/courses';
-    /* Fallback API Endpoints (in case the API goes down again) */
-    const fallbackQuotesAPI = 'https://zytronium.github.io/smileschool-api-placeholder/quotes.json';
-    const fallbackTutorialsAPI = 'https://zytronium.github.io/smileschool-api-placeholder/popular-tutorials.json';
-    const fallbackVideosAPI = 'https://zytronium.github.io/smileschool-api-placeholder/latest-videos.json';
-    const fallbackCoursesAPI = 'https://zytronium.github.io/smileschool-api-placeholder/courses.json';
+  /* API Endpoints */
+  const quotesAPI = 'https://smileschool-api.hbtn.info/quotes';
+  const tutorialsAPI = 'https://smileschool-api.hbtn.info/popular-tutorials';
+  const videosAPI = 'https://smileschool-api.hbtn.info/latest-videos';
+  const coursesAPI = 'https://smileschool-api.hbtn.info/courses';
+  /* Fallback API Endpoints (in case the API goes down again) */
+  const fallbackQuotesAPI = 'https://zytronium.github.io/smileschool-api-placeholder/quotes.json';
+  const fallbackTutorialsAPI = 'https://zytronium.github.io/smileschool-api-placeholder/popular-tutorials.json';
+  const fallbackVideosAPI = 'https://zytronium.github.io/smileschool-api-placeholder/latest-videos.json';
+  const fallbackCoursesAPI = 'https://zytronium.github.io/smileschool-api-placeholder/courses.json';
 
-    /* Quotes Loading Vars */
-    const quotesCarousel = $('#carousel-quotes');
-    const qLoader = $('#quotes-loader');
-    /* Tutorials Loading Vars */
-    const tutorialsCarousel = $('#carousel-tutorials');
-    const tLoader = $('#tutorials-loader');
+  /* Quotes Loading Vars */
+  const quotesCarouselInner = $('#carousel-quotes');
+  const qLoader = $('#quotes-loader');
+  /* Tutorials Loading Vars */
+  const tCarousel = $('#carouselExampleControls2')
+  const tutorialsCarouselInner = $('#carousel-tutorials');
+  const tLoader = $('#tutorials-loader');
+  /* Videos Loading Vars */
+  const vCarousel = $('#carouselExampleControls3')
+  const videosCarouselInner = $('#carousel-videos');
+  const vLoader = $('#videos-loader');
 
-    function getData(api, index) {
-        return $.ajax({
-            method: 'GET',
-            url: api,
-            dataType: 'json'
-        }).then(function (data) {
-            return data[index];
-        }).catch(function (xhr, status, error) {
-            return {text: error};
-        });
-    }
+  function getCardWidth(carouselInner) {
+    return carouselInner.find('.card').outerWidth(true);
+  }
 
-    function getDataLength(api) {
-        return $.ajax({
-            method: 'GET',
-            url: api,
-            dataType: 'json'
-        }).then(function (data) {
-            return data.length;
-        }).catch(function (xhr, status, error) {
-            return error;
-        });
-    }
+  function animateCardScroll(carouselInner, direction) {
+    if (carouselInner.is(':animated'))
+      return;
 
-    function addClones(carouselInner) {
-        const api = carouselInner[0].id === 'carousel-tutorials' ? tutorialsAPI : videosAPI;
+    const cardWidth = getCardWidth(carouselInner);
+    const shiftAmount = direction === 'next' ? -cardWidth : cardWidth;
 
-        getDataLength(api).then(function (totalItems) {
-            // Determine number of items per slide:
-            // Desktop: 4 | Tablet: 2 | Mobile: 1
-            let cardsPerSlide;
-            const winWidth = $(window).width();
-            if (winWidth >= 992) {
-                cardsPerSlide = 4;
-            } else if (winWidth >= 768) {
-                cardsPerSlide = 2;
-            } else {
-                cardsPerSlide = 1;
-            }
-            const clonesToAdd = cardsPerSlide - 1;
+    carouselInner.animate({ left: `+=${shiftAmount}` }, 500, () => {
+      if (direction === 'next') {
+        const firstCard = carouselInner.find('.card').first().closest('.col-12, .col-sm-6, .col-md-6, .col-lg-3');
+        carouselInner.find('.carousel-item').find('.row .align-items-center .mx-auto').append(firstCard);
+      } else {
+        const lastCard = carouselInner.find('.card').last().closest('.col-12, .col-sm-6, .col-md-6, .col-lg-3');
+        carouselInner.find('.carousel-item').find('.row .align-items-center .mx-auto').prepend(lastCard);
+      }
 
-            $(`#${carouselInner[0].id} .carousel-item`).each((index, item) => {
-                // Select the row of cards
-                const $cardsRow = $(item).find('.row.align-items-center.mx-auto');
+      carouselInner.css('left', 0);
+    });
+  }
 
-                // Loop to add the clones.
-                for (let i = 1; i <= clonesToAdd; i++) {
-                    let cloneIndex = (index + i) % totalItems;
+  function getData(api, index) {
+    return $.ajax({
+      method: 'GET',
+      url: api,
+      dataType: 'json'
+    }).then(function (data) {
+      return data[index];
+    }).catch(function (xhr, status, error) {
+      return {text: error};
+    });
+  }
 
-                    getData(api, cloneIndex)
-                        .then(function (data) {
-                            console.log(data);
-                            // Create HTML for the clone card
-                            const newCard = $(`
+  function getDataLength(api) {
+    return $.ajax({
+      method: 'GET',
+      url: api,
+      dataType: 'json'
+    }).then(function (data) {
+      return data.length;
+    }).catch(function (xhr, status, error) {
+      return error;
+    });
+  }
+
+  function addClones(carouselInner) {
+    const api = carouselInner[0].id === 'carousel-tutorials' ? fallbackTutorialsAPI : videosAPI;
+
+    getDataLength(api).then(function (totalItems) {
+      // Determine number of items per slide:
+      // Desktop: 4 | Tablet: 2 | Mobile: 1
+      let cardsPerSlide;
+      const winWidth = $(window).width();
+      if (winWidth >= 992) {
+        cardsPerSlide = 4;
+      } else if (winWidth >= 768) {
+        cardsPerSlide = 2;
+      } else {
+        cardsPerSlide = 1;
+      }
+      const clonesToAdd = cardsPerSlide - 1;
+
+      $(`#${carouselInner[0].id} .carousel-item`).each((index, item) => {
+        // Select the row of cards
+        const $cardsRow = $(item).find('.row.align-items-center.mx-auto');
+
+        // Loop to add the clones.
+        for (let i = 1; i <= clonesToAdd; i++) {
+          let cloneIndex = (index + i) % totalItems;
+
+          getData(api, cloneIndex)
+            .then(function (data) {
+              // Create HTML for the clone card
+              const newCard = $(`
                               <div class="col-12 col-sm-6 col-md-6 col-lg-3 d-flex justify-content-center justify-content-md-end justify-content-lg-center">
                                 <div class="card">
                                   <img src="${data.thumb_url}" class="card-img-top" alt="${data.title}" />
@@ -97,31 +125,31 @@ $(document).ready(() => {
                               </div>
                             `);
 
-                            // Add the cloned card to the row of cards
-                            $cardsRow.append(newCard);
-                        })
-                        .catch(function (error) {
-                            console.error("Error fetching clone data:", error);
-                        });
-                }
+              // Add the cloned card to the row of cards
+              $cardsRow.append(newCard);
+            })
+            .catch(function (error) {
+              console.error("Error fetching clone data:", error);
             });
-        }).catch(function (error) {
-            console.error("Error getting data length:", error);
-        });
-    }
+        }
+      });
+    }).catch(function (error) {
+      console.error("Error getting data length:", error);
+    });
+  }
 
-    /* Quotes Loader */
-    $.ajax({
-        method: 'GET',
-        url: fallbackQuotesAPI,
-        dataType: 'json',
-        success: function (data) {
-            qLoader.remove();
+  /* Quotes Loader */
+  $.ajax({
+    method: 'GET',
+    url: fallbackQuotesAPI,
+    dataType: 'json',
+    success: function (data) {
+      qLoader.remove();
 
-            data.forEach((quote, index) => {
-                const item = $(`<div class="carousel-item${index === 0 ? ' active' : ''}">`);
+      data.forEach((quote, index) => {
+        const item = $(`<div class="carousel-item${index === 0 ? ' active' : ''}">`);
 
-                item.html(`
+        item.html(`
                 <div class="row mx-auto align-items-center">
                   <div class="col-12 col-sm-2 col-lg-2 offset-lg-1 text-center">
                     <img
@@ -140,31 +168,31 @@ $(document).ready(() => {
                 </div>
                 `);
 
-                quotesCarousel.append(item);
-            });
-        },
-        error: function (xhr, status, error) {
-            console.error('Error loading the quotes: ', error);
-            qLoader.remove();
+        quotesCarouselInner.append(item);
+      });
+    },
+    error: function (xhr, status, error) {
+      console.error('Error loading the quotes: ', error);
+      qLoader.remove();
 
-            const errorMessage = $(`<p class="text-danger text-center h4">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
+      const errorMessage = $(`<p class="text-danger text-center h4">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
 
-            quotesCarousel.append(errorMessage);
-        }
-    })
+      quotesCarouselInner.append(errorMessage);
+    }
+  })
 
-    /* Tutorials Loader */
-    $.ajax({
-        method: 'GET',
-        url: tutorialsAPI,
-        dataType: 'json',
-        success: function (data) {
-            tLoader.remove();
+  /* Tutorials Loader */
+  $.ajax({
+    method: 'GET',
+    url: fallbackTutorialsAPI,
+    dataType: 'json',
+    success: function (data) {
+      tLoader.remove();
 
-            data.forEach((tutorial, index) => {
-                const item = $(`<div class="carousel-item${index === 0 ? ' active' : ''}">`);
+      data.forEach((tutorial, index) => {
+        const item = $(`<div class="carousel-item${index === 0 ? ' active' : ''}">`);
 
-                item.html(`
+        item.html(`
                 <div class="row align-items-center mx-auto">
                   <div
                     class="col-12 col-sm-6 col-md-6 col-lg-3 d-flex justify-content-center justify-content-md-end justify-content-lg-center"
@@ -217,18 +245,39 @@ $(document).ready(() => {
                 </div>
                 `);
 
-                tutorialsCarousel.append(item);
-            });
+        tutorialsCarouselInner.append(item);
+      });
 
-            addClones(tutorialsCarousel);
-        },
-        error: function (xhr, status, error) {
-            console.error('Error loading the tutorials: ', error);
-            tLoader.remove();
+      addClones(tutorialsCarouselInner);
+    },
+    error: function (xhr, status, error) {
+      console.error('Error loading the tutorials: ', error);
+      tLoader.remove();
 
-            const errorMessage = $(`<p class="text-danger text-center h4">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
+      const errorMessage = $(`<p class="text-danger text-center h4">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
 
-            tutorialsCarousel.append(errorMessage);
-        }
-    });
+      tutorialsCarouselInner.append(errorMessage);
+    }
+  });
+
+  tCarousel.find('.carousel-control-next').click((event) => {
+    event.preventDefault();
+    animateCardScroll(tutorialsCarouselInner, 'next');
+  });
+
+  tCarousel.find('.carousel-control-prev').click((event) => {
+    event.preventDefault();
+    animateCardScroll(tutorialsCarouselInner, 'prev');
+  });
+
+  vCarousel.find('.carousel-control-next').click((event) => {
+    event.preventDefault();
+    animateCardScroll(videosCarouselInner, 'next');
+  });
+
+  vCarousel.find('.carousel-control-prev').click((event) => {
+    event.preventDefault();
+    animateCardScroll(videosCarouselInner, 'prev');
+  });
+
 });

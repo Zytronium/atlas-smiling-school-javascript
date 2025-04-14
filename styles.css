@@ -904,6 +904,14 @@
 /* I'm not going to look through 900 lines of CSS and remove what's no longer needed. */
 /* Everything below here is new. */
 
+.single-card-scroll {
+  left: 0;
+  transition: none;
+}
+
+.single-card-scroll .carousel-item {
+  padding: 0;
+}
 .loader {
   border: 10px solid white;
   border-top: 10px solid transparent;

@@ -106,3 +106,5 @@ Daniel Stelljes: [Zytronium](https://github.com/Zytronium)
 ---
 
 [Click here to view on GitHub Pages.](https://zytronium.github.io/atlas-smiling-school-javascript/homepage)
+
+<em style="color: darkred">I survived the horror of Atlas School, April 13th</em>
