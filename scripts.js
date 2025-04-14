@@ -26,7 +26,6 @@ $(document).ready(() => {
   let videosLoaded = 0;
   let numbVideos;
 
-
   getDataLength(tutorialsAPI).then((totalItems) => {
     numbTutorials = totalItems;
   }).catch(function (error) {
@@ -274,8 +273,6 @@ $(document).ready(() => {
     url: tutorialsAPI,
     dataType: 'json',
     success: function (data) {
-      // tLoader.remove();
-
       data.forEach((tutorial, index) => {
         const item = $(`<div class="carousel-item${index === 0 ? ' active' : ''}">`);
 
@@ -342,9 +339,86 @@ $(document).ready(() => {
       console.error('Error loading the tutorials: ', error);
       tLoader.remove();
 
-      const errorMessage = $(`<p class="text-danger text-center h4">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
+      const errorMessage = $(`<p class="text-danger text-center h4 m-auto">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
 
       tutorialsCarouselInner.append(errorMessage);
+    }
+  });
+  /* Popular Videos Loader */
+  $.ajax({
+    method: 'GET',
+    url: videosAPI,
+    dataType: 'json',
+    success: function (data) {
+      data.forEach((video, index) => {
+        const item = $(`<div class="carousel-item${index === 0 ? ' active' : ''}">`);
+
+        item.html(`
+                <div class="row align-items-center mx-auto">
+                  <div
+                    class="col-12 col-sm-6 col-md-6 col-lg-3 d-flex justify-content-center justify-content-md-end justify-content-lg-center"
+                  >
+                    <div class="card">
+                      <img
+                        src="${video.thumb_url}"
+                        class="card-img-top"
+                        alt="${video.title}"
+                      />
+                      <div class="card-img-overlay text-center">
+                        <img
+                          src="images/play.png"
+                          alt="Play"
+                          width="64px"
+                          class="align-self-center play-overlay"
+                        />
+                      </div>
+                      <div class="card-body">
+                        <h5 class="card-title font-weight-bold">
+                          ${video.title}
+                        </h5>
+                        <p class="card-text text-muted">
+                          ${video['sub-title']}
+                        </p>
+                        <div class="creator d-flex align-items-center">
+                          <img
+                            src="${video.author_pic_url}"
+                            alt="Creator of Video"
+                            width="30px"
+                            class="rounded-circle"
+                          />
+                          <h6 class="pl-3 m-0 main-color">${video.author}</h6>
+                        </div>
+                        <div class="info pt-3 d-flex justify-content-between">
+                          <div class="rating">
+                          ${[...Array(5)].map((_, i) => (`
+                            <img
+                              src="images/star_${i < video.star ? 'on' : 'off'}.png"
+                              alt="star on"
+                              width="15px"
+                              />
+                          `)).join('')}
+                          </div>
+                          <span class="main-color">${video.duration}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                `);
+
+        videosCarouselInner.append(item);
+        videosLoaded++;
+      });
+
+      addClones(videosCarouselInner);
+    },
+    error: function (xhr, status, error) {
+      console.error('Error loading the videos: ', error);
+      vLoader.remove();
+
+      const errorMessage = $(`<p class="text-danger text-center h4 m-auto">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
+
+      videosCarouselInner.append(errorMessage);
     }
   });
 
