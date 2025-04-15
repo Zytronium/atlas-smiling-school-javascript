@@ -69,6 +69,24 @@ $(document).ready(() => {
     });
   }
 
+  function loadCarouselHelper(data, loader, carousel, swiperContainerID) {
+    let maxCardsPerSlide = 4; // Future-proof: set to 4 instead of setting based on window size in case the user later resizes from mobile/tablet to desktop size
+    let totalCards = 0;
+
+    loader.remove();
+
+    // Append all cards and THEN duplicate them until there are more cards than the max number of cards per slide to always allow looping
+    do {
+      data.forEach((item) => {
+        carousel.append(getCardHTML(item));
+      });
+
+      totalCards += data.length;
+    } while (totalCards <= maxCardsPerSlide);
+
+    initializeSwiper(`#${swiperContainerID}`);
+  }
+
   function loadCarousel(api, fallbackAPI, carousel, loader, swiperContainerID) {
     $.ajax({
       url: api,
@@ -78,23 +96,11 @@ $(document).ready(() => {
         url: fallbackAPI,
         method: 'GET',
         dataType: 'json'
+      }).then((data) => {
+        loadCarouselHelper(data, loader, carousel, swiperContainerID);
       })
     }).then((data) => {
-      let maxCardsPerSlide = 4; // Future-proof: set to 4 instead of setting based on window size in case the user later resizes from mobile/tablet to desktop size
-      let totalCards = 0;
-
-      loader.remove();
-
-      // Append all cards and THEN duplicate them until there are more cards than the max number of cards per slide to always allow looping
-      do {
-        data.forEach((item) => {
-          carousel.append(getCardHTML(item));
-        });
-
-        totalCards += data.length;
-      } while(totalCards <= maxCardsPerSlide);
-
-      initializeSwiper(`#${swiperContainerID}`);
+      loadCarouselHelper(data, loader, carousel, swiperContainerID);
     });
   }
 
