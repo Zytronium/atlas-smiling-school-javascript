@@ -81,25 +81,20 @@ $(document).ready(() => {
         method: 'GET',
         dataType: 'json'
       })
-    }).then( (data) => {
-      let cardsPerSlide = 1;
+    }).then((data) => {
+      let maxCardsPerSlide = 4; // Future-proof: set to 4 instead of setting based on window size in case the user later resizes from mobile/tablet to desktop size
       let totalCards = 0;
-      const winWidth = $(window).width();
-      if (winWidth >= 992) {
-        cardsPerSlide = 4;
-      } else if (winWidth >= 768) {
-        cardsPerSlide = 2;
-      }
 
       loader.remove();
 
+      // Append all cards and THEN duplicate them until there are more cards than the max number of cards per slide to always allow looping
       do {
         data.forEach((item) => {
           carousel.append(getCardHTML(item));
         });
 
         totalCards += data.length;
-      } while(totalCards <= cardsPerSlide);
+      } while(totalCards <= maxCardsPerSlide);
 
       initializeSwiper(`#${swiperContainerID}`);
     });
