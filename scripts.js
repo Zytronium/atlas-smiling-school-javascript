@@ -23,7 +23,7 @@ $(document).ready(() => {
   function getCardHTML(data) {
     return $(`
               <div class="swiper-slide">
-                <div class="card">
+                <div class="card m-auto">
                   <img src="${data.thumb_url}" class="card-img-top" alt="${data.title}" />
                   <div class="card-img-overlay text-center">
                     <img src="images/play.png" alt="Play" width="64px" class="align-self-center play-overlay" />
