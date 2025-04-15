@@ -17,91 +17,10 @@ $(document).ready(() => {
   const tCarousel = $('#swiper-tutorials')
   const tutorialsCarouselInner = $('#carousel-tutorials');
   const tLoader = $('#tutorials-loader');
-  let tutorialsLoaded = 0;
-  let numbTutorials;
   /* Videos Loading Vars */
   const vCarousel = $('#swiper-videos')
   const videosCarouselInner = $('#carousel-videos');
   const vLoader = $('#videos-loader');
-  let videosLoaded = 0;
-  let numbVideos;
-
-  getDataLength(tutorialsAPI).then((totalItems) => {
-    numbTutorials = totalItems;
-  }).catch(function (error) {
-    console.error("Error getting data length:", error);
-  });
-
-  getDataLength(videosAPI).then((totalItems) => {
-    numbVideos = totalItems;
-  }).catch(function (error) {
-    console.error("Error getting data length:", error);
-  });
-
-  function getCardWidth(carouselInner) {
-    return carouselInner.find('.card').outerWidth(true);
-  }
-
-  function animateCardScroll(carouselInner, direction) {
-    if (carouselInner.is(':animated'))
-      return;
-
-    const items = carouselInner.find('.carousel-item');
-    const currentIndex = items.index(items.filter('.active'));
-    const cardWidth = getCardWidth(carouselInner);
-    const shiftAmount = direction === 'next' ? -cardWidth : cardWidth;
-    const row = carouselInner.find('.carousel-item.active .row.align-items-center.mx-auto');
-    const newCard = $('<div class="col-12 col-sm-6 col-md-6 col-lg-3 d-flex justify-content-center justify-content-md-end justify-content-lg-center"></div>');
-    // console.log(row);
-    // row.css('background', 'red');
-
-    if (direction === 'next') {
-      const firstCard = carouselInner.find('.col-12.col-sm-6.col-md-6.col-lg-3').first();
-      console.log(firstCard);
-      newCard.html(firstCard.innerHTML);
-      // firstCard.css('background', 'blue');
-      row.append(newCard);
-    } else {
-      const lastCard = carouselInner.find('.col-12.col-sm-6.col-md-6.col-lg-3').last();
-      console.log(lastCard);
-      newCard.html(lastCard.innerHTML);
-      // lastCard.css('background', 'blue');
-      row.prepend(newCard);
-    }
-    carouselInner.css('left', `-=${shiftAmount}`);
-
-    carouselInner.animate({ left: `+=${shiftAmount}` }, 500, () => {
-
-    });
-    items.removeClass('active');
-    items.eq((direction === 'next' ? currentIndex + 1 : currentIndex - 1 + items.length) % items.length).addClass('active');
-    carouselInner.css('left', 0);
-    newCard.remove();
-  }
-
-  function getData(api, index) {
-    return $.ajax({
-      method: 'GET',
-      url: api,
-      dataType: 'json'
-    }).then(function (data) {
-      return data[index];
-    }).catch(function (xhr, status, error) {
-      return {text: error};
-    });
-  }
-
-  function getDataLength(api) {
-    return $.ajax({
-      method: 'GET',
-      url: api,
-      dataType: 'json'
-    }).then(function (data) {
-      return data.length;
-    }).catch(function (xhr, status, error) {
-      return error;
-    });
-  }
 
   function getCardHTML (data) {
     return $(`
@@ -146,8 +65,8 @@ $(document).ready(() => {
         }
       },
       navigation: {
-        nextEL: carouselSelector + '-next',
-        prevEL: carouselSelector + '-prev'
+        nextEl: carouselSelector + '-next',
+        prevEl: carouselSelector + '-prev'
       }
     });
   }
@@ -163,11 +82,25 @@ $(document).ready(() => {
         dataType: 'json'
       })
     }).then( (data) => {
+      let cardsPerSlide = 1;
+      let totalCards = 0;
+      const winWidth = $(window).width();
+      if (winWidth >= 992) {
+        cardsPerSlide = 4;
+      } else if (winWidth >= 768) {
+        cardsPerSlide = 2;
+      }
+
       loader.remove();
 
-      data.forEach((item) => {
-        carousel.append(getCardHTML(item));
-      });
+      do {
+        data.forEach((item) => {
+          carousel.append(getCardHTML(item));
+        });
+
+        totalCards += data.length;
+      } while(totalCards <= cardsPerSlide);
+
       initializeSwiper(`#${swiperContainerID}`);
     });
   }
@@ -214,9 +147,8 @@ $(document).ready(() => {
       quotesCarouselInner.append(errorMessage);
     }
   });
-  /* Tutorials Loader */
+  /* Popular Tutorials Loader */
   loadCarousel(tutorialsAPI, fallbackTutorialsAPI, tutorialsCarouselInner, tLoader, 'swiper-tutorials');
-  /* Popular Videos Loader */
+  /* Latest Videos Loader */
   loadCarousel(videosAPI, fallbackVideosAPI, videosCarouselInner, vLoader, 'swiper-videos');
-
 });
