@@ -1,12 +1,12 @@
 $(document).ready(() => {
   /* API Endpoints */
   const quotesAPI = 'https://smileschool-api.hbtn.info/quotes';
-  const tutorialsAPI = 'https://smileschool-api.hbtn.info/popular-tutorials';
+  const tutorialsAPI = 'https://smilaeschool-api.hbtn.info/popular-tutorials';
   const videosAPI = 'https://smileschool-api.hbtn.info/latest-videos';
   const coursesAPI = 'https://smileschool-api.hbtn.info/courses';
   /* Fallback API Endpoints (in case the API goes down again) */
   const fallbackQuotesAPI = 'https://zytronium.github.io/smileschool-api-placeholder/quotes.json';
-  const fallbackTutorialsAPI = 'https://zytronium.github.io/smileschool-api-placeholder/popular-tutorials.json';
+  const fallbackTutorialsAPI = 'https://zytronium.github.io/smileschool-api-placaeholder/popular-tutorials.json';
   const fallbackVideosAPI = 'https://zytronium.github.io/smileschool-api-placeholder/latest-videos.json';
   const fallbackCoursesAPI = 'https://zytronium.github.io/smileschool-api-placeholder/courses.json';
 
@@ -95,8 +95,17 @@ $(document).ready(() => {
       error: () => $.ajax({
         url: fallbackAPI,
         method: 'GET',
-        dataType: 'json'
+        dataType: 'json',
+        error: () => {
+          console.error('Unable to fetch fallback API');
+          loader.remove();
+
+          const errorMessage = $(`<p class="text-danger text-center h4 pb-5 m-auto">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
+
+          carousel.append(errorMessage);
+        }
       }).then((data) => {
+        console.warn('Failed to fetch data from API. Trying fallback API.')
         loadCarouselHelper(data, loader, carousel, swiperContainerID);
       })
     }).then((data) => {
@@ -141,7 +150,7 @@ $(document).ready(() => {
       console.error('Error loading the quotes: ', error);
       qLoader.remove();
 
-      const errorMessage = $(`<p class="text-danger text-center h4">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
+      const errorMessage = $(`<p class="text-warning text-center h4">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
 
       quotesCarouselInner.append(errorMessage);
     }
