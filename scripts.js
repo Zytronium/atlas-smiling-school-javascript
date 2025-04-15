@@ -52,7 +52,7 @@ $(document).ready(() => {
   function initializeSwiper(carouselSelector) {
     new Swiper(carouselSelector, {
       slidesPerView: 1,
-      spaceBetween: 10,
+      spaceBetween: 20,
       loop: true,
       breakpoints: {
         768: {
