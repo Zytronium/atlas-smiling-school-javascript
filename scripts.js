@@ -1,12 +1,12 @@
 $(document).ready(() => {
   /* API Endpoints */
   const quotesAPI = 'https://smileschool-api.hbtn.info/quotes';
-  const tutorialsAPI = 'https://smilaeschool-api.hbtn.info/popular-tutorials';
+  const tutorialsAPI = 'https://smileschool-api.hbtn.info/popular-tutorials';
   const videosAPI = 'https://smileschool-api.hbtn.info/latest-videos';
   const coursesAPI = 'https://smileschool-api.hbtn.info/courses';
   /* Fallback API Endpoints (in case the API goes down again) */
   const fallbackQuotesAPI = 'https://zytronium.github.io/smileschool-api-placeholder/quotes.json';
-  const fallbackTutorialsAPI = 'https://zytronium.github.io/smileschool-api-placaeholder/popular-tutorials.json';
+  const fallbackTutorialsAPI = 'https://zytronium.github.io/smileschool-api-placeholder/popular-tutorials.json';
   const fallbackVideosAPI = 'https://zytronium.github.io/smileschool-api-placeholder/latest-videos.json';
   const fallbackCoursesAPI = 'https://zytronium.github.io/smileschool-api-placeholder/courses.json';
 
@@ -113,18 +113,13 @@ $(document).ready(() => {
     });
   }
 
-  /* Quotes Loader */
-  $.ajax({
-    method: 'GET',
-    url: fallbackQuotesAPI,
-    dataType: 'json',
-    success: function (data) {
-      qLoader.remove();
+  function loadQuotesCarousel (data) {
+    qLoader.remove();
 
-      data.forEach((quote, index) => {
-        const item = $(`<div class="carousel-item${index === 0 ? ' active' : ''}">`);
+    data.forEach((quote, index) => {
+      const item = $(`<div class="carousel-item${index === 0 ? ' active' : ''}">`);
 
-        item.html(`
+      item.html(`
                 <div class="row mx-auto align-items-center">
                   <div class="col-12 col-sm-2 col-lg-2 offset-lg-1 text-center">
                     <img
@@ -143,16 +138,34 @@ $(document).ready(() => {
                 </div>
                 `);
 
-        quotesCarouselInner.append(item);
-      });
-    },
-    error: function (xhr, status, error) {
-      console.error('Error loading the quotes: ', error);
-      qLoader.remove();
+      quotesCarouselInner.append(item);
+    });
+  }
 
-      const errorMessage = $(`<p class="text-warning text-center h4">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
+  /* Quotes Loader */
+  $.ajax({
+    method: 'GET',
+    url: fallbackQuotesAPI,
+    dataType: 'json',
+    error: () => $.ajax({
+      method: 'GET',
+      url: quotesAPI,
+      dataType: 'json',
+      error: (xhr, status, error) => {
+        console.error('Unable to fetch fallback quotes API: ', error);
+        qLoader.remove();
 
-      quotesCarouselInner.append(errorMessage);
+        const errorMessage = $(`<p class="text-warning text-center h4">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
+
+        quotesCarouselInner.append(errorMessage);
+      },
+      success: (data) => {
+        console.warn('Failed to fetch data from API. Trying fallback API.')
+        loadQuotesCarousel(data);
+      }
+    }),
+    success: (data) => {
+      loadQuotesCarousel(data);
     }
   });
   /* Popular Tutorials Loader */
