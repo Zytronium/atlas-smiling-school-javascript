@@ -100,11 +100,11 @@ Daniel Stelljes: [Zytronium](https://github.com/Zytronium)
 >### Progress Goals:
 >Friday: 25% (task 1-2) ✓  
 Saturday/Sunday: 50-70% (task 2-3) ✓  
-<strong>Monday: 80-100% (task 5-6)</strong>  
-<em style="color: grey;">Tuesday: 100% (task 6)</em>  
+Monday: 80-100% (task 5-6)  
+<strong>Tuesday: 100% (task 6)</strong>  
 
 ---
 
 [Click here to view on GitHub Pages.](https://zytronium.github.io/atlas-smiling-school-javascript/homepage)
 
-<em style="color: darkred">I survived the horror of Atlas School, April 13th</em>
+<em style="color: darkred">I survived the horror of the Atlas School Annex, April 13th</em>
