@@ -14,15 +14,13 @@ $(document).ready(() => {
   const quotesCarouselInner = $('#carousel-quotes');
   const qLoader = $('#quotes-loader');
   /* Tutorials Loading Vars */
-  const tCarousel = $('#swiper-tutorials')
   const tutorialsCarouselInner = $('#carousel-tutorials');
   const tLoader = $('#tutorials-loader');
   /* Videos Loading Vars */
-  const vCarousel = $('#swiper-videos')
   const videosCarouselInner = $('#carousel-videos');
   const vLoader = $('#videos-loader');
 
-  function getCardHTML (data) {
+  function getCardHTML(data) {
     return $(`
               <div class="swiper-slide">
                 <div class="card">
