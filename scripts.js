@@ -20,11 +20,15 @@ $(document).ready(() => {
   const videosCarouselInner = $('#carousel-videos');
   const vLoader = $('#videos-loader');
   /* Courses Loading Vars */
-  const coursesContainer = $('#courses-container');
   const searchInput = $('#search-keywords-input');
   const topicDropdown = $('#topic-dropdown');
   const sortByDropdown = $('#sort-by-dropdown');
+  const coursesContainer = $('#courses-container');
   const cLoader = $('#courses-loader');
+  /* Course search, filter, & sort values */
+  const searchValue = () => searchInput.value;
+  const topicValue = () => topicDropdown.find('a > span').text();
+  const sortValue = () => sortByDropdown.find('a > span').text();
 
   function getCardHTML(data) {
     return $(`
@@ -181,10 +185,59 @@ $(document).ready(() => {
 
   /* ------------------------------- Courses ------------------------------- */
 
+  // Converts a "snake_case" string to a "Title Case" string, as seen in this sentence.
+  function snake_case_To_TitleCase(str) { // I am aware this is a highly unusual naming convention
+    return str
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
+  function loadSearchFilters(data, callbackFn) {
+    /* todo:
+    *   Fetch and store the data from the API endpoint (data)
+    *   Set the default search value to `q` from the API
+    *   populate the `topic` dropdown and set the default value to `topic` from the API
+    *   populate the `sort by` dropdown and set the default value to `sort` from the API
+    *   set each dropdown menu item to set itself as that dropdown's value on click
+    *   run the callback function (callbackFn)
+    */
+
+    // Populate topic dropdown items
+    data.topics.forEach((topic) => {
+      const dropdownItem = $(`<a class="dropdown-item" href="#">${snake_case_To_TitleCase(topic)}</a>`);
+      topicDropdown.find('.dropdown-menu').append(dropdownItem);
+    });
+
+    // Populate sort by dropdown items
+    data.sorts.forEach((sort) => {
+      const dropdownItem = $(`<a class="dropdown-item" href="#">${snake_case_To_TitleCase(sort)}</a>`);
+      sortByDropdown.find('.dropdown-menu').append(dropdownItem);
+    });
+
+    // Set the search bar's, topic dropdown's, and sort dropdown's default value based on API data
+    searchInput.value = data.q;
+    topicDropdown.find('a > span').text(snake_case_To_TitleCase(data.topic));
+    sortByDropdown.find('a > span').text(snake_case_To_TitleCase(data.sort));
+
+    if (callbackFn) {
+      callbackFn(data.courses, sortValue());
+    }
+  }
+
+  function loadVideos(courses, sort) {
+    /* todo:
+    *   Get array of videos from API data (courses)
+    *   Filter the array of videos to account for the search query and topics filter
+    *   Sort the array according to the selected sort order.
+    *   Create and inject the HTML cards into the DOM
+    *   Remove the loader
+    */
+  }
+
   function loadCourses(data) {
     /* todo:
     *    -SEARCH & DROPDOWNS-
-    *   Fetch and store the data from the API endpoint
     *   Set the default search value to `q` from the API
     *   populate the `topic` dropdown and set the default value to `topic` from the API
     *   populate the `sort by` dropdown and set the default value to `sort` from the API
@@ -197,6 +250,8 @@ $(document).ready(() => {
     *   Create and inject the HTML cards into the DOM
     *   Remove the loader
     */
+
+    loadSearchFilters(data, loadVideos);
   }
 
   /* Courses Loader */
