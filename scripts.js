@@ -338,6 +338,9 @@ $(document).ready(() => {
       coursesContainer.append(videoCard);
     });
 
+    // Show the number of search results
+    $('#video-count').text(`${filteredCourses.length} videos`);
+
     // If nothing matches the given search & filters, append a message saying so
     if (filteredCourses.length === 0) {
       const noResultsMessage = $(`<p class="text-center text-muted my-4 m-auto">No results found. Check for typos in your search query.</p>`);
