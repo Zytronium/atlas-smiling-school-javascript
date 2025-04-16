@@ -343,7 +343,7 @@ $(document).ready(() => {
 
     // If nothing matches the given search & filters, append a message saying so
     if (filteredCourses.length === 0) {
-      const noResultsMessage = $(`<p class="text-center text-muted my-4 m-auto">No results found. Check for typos in your search query.</p>`);
+      const noResultsMessage = $(`<p class="text-center text-muted my-4 h4 m-auto">No results found.<br><small>Check for typos in your search query.</small></p>`);
       coursesContainer.append(noResultsMessage);
     }
 
@@ -372,31 +372,34 @@ $(document).ready(() => {
   }
 
   /* Courses Loader */
-  $.ajax({
-    method: 'GET',
-    url: coursesAPI,
-    dataType: 'json',
-    error: () => $.ajax({
+  try { // only do this if Swiper is not defined, this avoids an error on other pages that have Swiper defined and don't have a courses section
+    if (Swiper) {}
+  } catch (e) {
+    $.ajax({
       method: 'GET',
-      url: fallbackCoursesAPI,
+      url: coursesAPI,
       dataType: 'json',
-      error: (xhr, status, error) => {
-        console.error('Unable to fetch courses API or fallback API: ', error);
+      error: () => $.ajax({
+        method: 'GET',
+        url: fallbackCoursesAPI,
+        dataType: 'json',
+        error: (xhr, status, error) => {
+          console.error('Unable to fetch courses API or fallback API: ', error);
 
-        cLoader.hide();
+          cLoader.hide();
 
-        const errorMessage = $(`<p class="text-danger text-center h4 m-auto">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
+          const errorMessage = $(`<p class="text-danger text-center h4 m-auto">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
 
-        coursesContainer.append(errorMessage);
-      },
+          coursesContainer.append(errorMessage);
+        },
+        success: (data) => {
+          console.warn('Unable to fetch courses API. Fetched from fallback API instead.');
+          loadCourses(data);
+        }
+      }),
       success: (data) => {
-        console.warn('Unable to fetch courses API. Fetched from fallback API instead.');
         loadCourses(data);
       }
-    }),
-    success: (data) => {
-      loadCourses(data);
-    }
-  });
-
+    });
+  }
 });
