@@ -19,6 +19,12 @@ $(document).ready(() => {
   /* Videos Loading Vars */
   const videosCarouselInner = $('#carousel-videos');
   const vLoader = $('#videos-loader');
+  /* Courses Loading Vars */
+  const coursesContainer = $('#courses-container');
+  const searchInput = $('#search-keywords-input');
+  const topicDropdown = $('#topic-dropdown');
+  const sortByDropdown = $('#sort-by-dropdown');
+  const cLoader = $('#courses-loader');
 
   function getCardHTML(data) {
     return $(`
@@ -172,4 +178,48 @@ $(document).ready(() => {
   loadCarousel(tutorialsAPI, fallbackTutorialsAPI, tutorialsCarouselInner, tLoader, 'swiper-tutorials');
   /* Latest Videos Loader */
   loadCarousel(videosAPI, fallbackVideosAPI, videosCarouselInner, vLoader, 'swiper-videos');
+
+  /* ------------------------------- Courses ------------------------------- */
+
+  function loadCourses(data) {
+    /* todo:
+    *    -SEARCH & DROPDOWNS-
+    *   Fetch and store the data from the API endpoint
+    *   Set the default search value to `q` from the API
+    *   populate the `topic` dropdown and set the default value to `topic` from the API
+    *   populate the `sort by` dropdown and set the default value to `sort` from the API
+    *   load the videos
+    *   ----------
+    *    -VIDEOS-
+    *   Get array of videos from API data
+    *   Filter the array of videos to account for the search query and topics filter
+    *   Sort the array according to the selected sort order.
+    *   Create and inject the HTML cards into the DOM
+    *   Remove the loader
+    */
+  }
+
+  /* Courses Loader */
+  $.ajax({
+    method: 'GET',
+    url: coursesAPI,
+    dataType: 'json',
+    error: () => $.ajax({
+      method: 'GET',
+      url: fallbackCoursesAPI,
+      dataType: 'json',
+      error: (xhr, status, error) => {
+        console.error('Unable to fetch courses API or fallback API: ', error);
+        // todo
+      },
+      success: (data) => {
+        console.warn('Unable to fetch courses API. Fetched from fallback API instead.');
+        loadCourses(data);
+      }
+    }),
+    success: (data) => {
+      loadCourses(data);
+    }
+  });
+
 });

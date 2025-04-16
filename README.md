@@ -91,11 +91,11 @@ Daniel Stelljes: [Zytronium](https://github.com/Zytronium)
 - [X] ​2. [Homepage - popular tutorials](homepage.html#carousel-tutorials) (20/20 pts)
 - [X] ​3. [Homepage - latest videos](homepage.html#carousel-videos) (20/20 pts)
 - [X] ​4. [Pricing - quotes](pricing.html) (10/10 pts)
-- [ ] ​5. [Courses](courses.html) (0/25 pts)
+- [ ] ​5. [Courses](courses.html) (~1/25 pts)
 - [X] ​6. Host to Pages! (5/5 pts)
 
 
-- [ ] **Everything Done ✓** (75/100 pts) - 75%
+- [ ] **Everything Done ✓** (76/100 pts) - 76%
 
 >### Progress Goals:
 >Friday: 25% (task 1-2) ✓  

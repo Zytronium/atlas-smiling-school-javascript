@@ -101,6 +101,7 @@
                   ></span>
                 </div>
                 <input
+                  id="search-keywords-input"
                   type="text"
                   class="form-control search-text-area"
                   aria-label="Default"
@@ -113,7 +114,7 @@
               <span class="text-white font-weight-bold drop-down-title">
                 TOPIC
               </span>
-              <div class="dropdown">
+              <div class="dropdown" id="topic-dropdown">
                 <a
                   class="btn dropdown-toggle text-left"
                   href="#"
@@ -140,7 +141,7 @@
               <span class="text-white font-weight-bold drop-down-title"
                 >SORT BY</span
               >
-              <div class="dropdown">
+              <div class="dropdown" id="sort-by-dropdown">
                 <a
                   class="btn dropdown-toggle text-left"
                   href="#"
@@ -171,7 +172,8 @@
           <div class="section-title">
             <span class="text-muted video-count">11 videos</span>
           </div>
-          <div class="row">
+          <div class="row" id="courses-container">
+            <div class="loader2" id="courses-loader"></div>
             <div class="col-12 col-sm-4 col-lg-3 d-flex justify-content-center">
               <div class="card">
                 <img
