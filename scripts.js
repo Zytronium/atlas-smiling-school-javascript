@@ -200,6 +200,51 @@ $(document).ready(() => {
     sortByDropdown.find('a > span').text(value);
   }
 
+  function getCourseCardHTML(course) {
+    return $(`
+      <div class="col-12 col-sm-4 col-lg-3 d-flex justify-content-center">
+              <div class="card">
+                <img
+                  src="${course.thumb_url}"
+                  class="card-img-top"
+                  alt="Video thumbnail"
+                />
+                <div class="card-img-overlay text-center">
+                  <img
+                    src="images/play.png"
+                    alt="Play"
+                    width="64px"
+                    class="align-self-center play-overlay"
+                  />
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title font-weight-bold">${course.title}</h5>
+                  <p class="card-text text-muted">
+                    ${course['sub-title']}
+                  </p>
+                  <div class="creator d-flex align-items-center">
+                    <img
+                      src="${course.author_pic_url}"
+                      alt="Creator of
+                      Video"
+                      width="30px"
+                      class="rounded-circle"
+                    />
+                    <h6 class="pl-3 m-0 main-color">${course.author}</h6>
+                  </div>
+                  <div class="info pt-3 d-flex justify-content-between">
+                    <div class="rating">
+                      ${[...Array(5)].map((_, i) => (`
+                          <img src="images/star_${i < course.star ? 'on' : 'off'}.png" alt="star" width="15px" />
+                        `)).join('')}
+                    </div>
+                    <span class="main-color">${course.duration}</span>
+                  </div>
+                </div>
+              </div>
+            </div>`);
+  }
+
   function populateDropdown(menu, items, onSelect) {
     items.forEach((item) => {
       const label = snake_case_To_TitleCase(item); // Convert the label to Title Case
@@ -224,18 +269,18 @@ $(document).ready(() => {
     populateDropdown(topicDropdown.find('.dropdown-menu'), data.topics, (val) => {
       // Apply topic filter and reload videos
       setTopicDropdownValue(val);
-      reloadVideos(data.courses);
+      reloadVideos(data.courses, data.sorts);
     });
 
     populateDropdown(sortByDropdown.find('.dropdown-menu'), data.sorts, (val) => {
       // Apply sort order  and reload videos
       setSortByDropdownValue(val);
-      reloadVideos(data.courses);
+      reloadVideos(data.courses, data.sorts);
     });
 
     // Apply search query and re-search (reload videos) when search input changes
     searchInput.change(() => {
-      reloadVideos(data.courses); // I suspect this will cause issues reloading while already loading after a previous change if this runs every time a character is typed or deleted
+      reloadVideos(data.courses, data.sorts); // I suspect this will cause issues reloading while already loading after a previous change if this runs every time a character is typed or deleted
     });
 
     // Set the search bar's, topic dropdown's, and sort dropdown's default value based on API data
@@ -244,22 +289,57 @@ $(document).ready(() => {
     setSortByDropdownValue(snake_case_To_TitleCase(data.sort));
   }
 
-  function reloadVideos(courses) {
-    // todo: unload all videos
-    loadVideos(courses); // load all videos
+  function reloadVideos(courses, sorts) {
+    coursesContainer.empty()
+    loadVideos(courses, sorts); // load all videos
   }
 
-  function loadVideos(courses) {
-    /* todo:
-    *   Add a loader if one is not there
-    *   Get array of videos from API data (courses)
-    *   Filter the array of videos to account for the search query and topics filter
-    *   Sort the array according to the selected sort order.
-    *   Create and inject the HTML cards into the DOM
-    *   Remove the loader
+  function loadVideos(courses, sorts) {
+    /*
+    * Show the loader
+    * Get array of videos from API data (courses)
+    * Filter the array of videos to account for the search query and topics filter
+    * Sort the array according to the selected sort order.
+    * Create and inject the HTML cards into the DOM
+    * Hide the loader
     */
 
-    cLoader.remove();
+    // Show the loader
+    cLoader.show();
+
+    // Filter the courses
+    let filteredCourses = courses.filter((course) => {
+      const matchesTopic = topicValue() === 'All' || snake_case_To_TitleCase(course.topic) === topicValue();
+      const matchesQuery = searchValue() === "" || searchValue().toLowerCase().split(" ").every((word) => course.keywords.some((keyword) => keyword.toLowerCase().includes(word)));
+      return matchesTopic && matchesQuery
+    });
+
+    // Sort the courses
+    filteredCourses.sort((a, b) => {
+      switch (sortValue()) {
+        case 'Most Popular':
+          return b.star - a.star;
+        case 'Most Recent':
+          return b.published_at - a.published_at; // Appears to be UNIX timestamps
+        case 'Most Viewed':
+          return b.views - a.views;
+        default: // Unknown sort value - default to sorting by popularity
+          console.warn(`Unknown sort value "${sortValue()}". Sorting by "Most Popular" instead.`);
+          return b.star - a.star;
+      }
+    });
+
+    // Create video cards
+    filteredCourses.forEach(course => {
+      // Create video card      // dang I wish I could just create video cards like that for my PC build. I could use a new GPU. \\
+      const videoCard = getCourseCardHTML(course);
+
+      // Inject the video card into he courses container
+      coursesContainer.append(videoCard);
+    });
+
+    // Hide the loader
+    cLoader.hide();
   }
 
   function loadCourses(data) {
@@ -279,7 +359,7 @@ $(document).ready(() => {
     */
 
     loadSearchFilters(data);
-    loadVideos(data.courses);
+    loadVideos(data.courses, data.sorts);
   }
 
   /* Courses Loader */
