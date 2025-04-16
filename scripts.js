@@ -338,24 +338,30 @@ $(document).ready(() => {
       coursesContainer.append(videoCard);
     });
 
+    // If nothing matches the given search & filters, append a message saying so
+    if (filteredCourses.length === 0) {
+      const noResultsMessage = $(`<p class="text-center text-muted my-4 m-auto">No results found. Check for typos in your search query.</p>`);
+      coursesContainer.append(noResultsMessage);
+    }
+
     // Hide the loader
     cLoader.hide();
   }
 
   function loadCourses(data) {
-    /* todo:
-    *    -SEARCH & DROPDOWNS-
-    *   Set the default search value to `q` from the API
-    *   populate the `topic` dropdown and set the default value to `topic` from the API
-    *   populate the `sort by` dropdown and set the default value to `sort` from the API
-    *   load the videos
-    *   ----------
-    *    -VIDEOS-
-    *   Get array of videos from API data
-    *   Filter the array of videos to account for the search query and topics filter
-    *   Sort the array according to the selected sort order.
-    *   Create and inject the HTML cards into the DOM
-    *   Remove the loader
+    /*
+    *  -SEARCH & DROPDOWNS-
+    * Set the default search value to `q` from the API
+    * populate the `topic` dropdown and set the default value to `topic` from the API
+    * populate the `sort by` dropdown and set the default value to `sort` from the API
+    * load the videos
+    * ----------
+    *  -VIDEOS-
+    * Get array of videos from API data
+    * Filter the array of videos to account for the search query and topics filter
+    * Sort the array according to the selected sort order.
+    * Create and inject the HTML cards into the DOM
+    * Remove the loader
     */
 
     loadSearchFilters(data);
@@ -373,7 +379,12 @@ $(document).ready(() => {
       dataType: 'json',
       error: (xhr, status, error) => {
         console.error('Unable to fetch courses API or fallback API: ', error);
-        // todo
+
+        cLoader.hide();
+
+        const errorMessage = $(`<p class="text-danger text-center h4 m-auto">:(<br>Sorry, something went wrong.<br>Please try again later.</p>`);
+
+        coursesContainer.append(errorMessage);
       },
       success: (data) => {
         console.warn('Unable to fetch courses API. Fetched from fallback API instead.');
