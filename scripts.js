@@ -221,13 +221,13 @@ $(document).ready(() => {
     */
 
     // Populate both dropdown menus' items
-    populateDropdown(topicDropdown.find('.dropdown-meu'), data.topics, (val) => {
+    populateDropdown(topicDropdown.find('.dropdown-menu'), data.topics, (val) => {
       // Apply topic filter and reload videos
       setTopicDropdownValue(val);
       reloadVideos(data.courses);
     });
 
-    populateDropdown(sortByDropdown.find('.dropdown-meu'), data.sorts, (val) => {
+    populateDropdown(sortByDropdown.find('.dropdown-menu'), data.sorts, (val) => {
       // Apply sort order  and reload videos
       setSortByDropdownValue(val);
       reloadVideos(data.courses);
