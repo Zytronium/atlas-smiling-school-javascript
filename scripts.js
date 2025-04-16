@@ -26,7 +26,7 @@ $(document).ready(() => {
   const coursesContainer = $('#courses-container');
   const cLoader = $('#courses-loader');
   /* Course search, filter, & sort values */
-  const searchValue = () => searchInput.value;
+  const searchValue = () => searchInput.val();
   const topicValue = () => topicDropdown.find('a > span').text();
   const sortValue = () => sortByDropdown.find('a > span').text();
 
@@ -193,46 +193,73 @@ $(document).ready(() => {
       .join(' ');
   }
 
-  function loadSearchFilters(data, callbackFn) {
-    /* todo:
-    *   Fetch and store the data from the API endpoint (data)
-    *   Set the default search value to `q` from the API
-    *   populate the `topic` dropdown and set the default value to `topic` from the API
-    *   populate the `sort by` dropdown and set the default value to `sort` from the API
-    *   set each dropdown menu item to set itself as that dropdown's value on click
-    *   run the callback function (callbackFn)
+  function setTopicDropdownValue(value) {
+    topicDropdown.find('a > span').text(value);
+  }
+  function setSortByDropdownValue(value) {
+    sortByDropdown.find('a > span').text(value);
+  }
+
+  function populateDropdown(menu, items, onSelect) {
+    items.forEach((item) => {
+      const label = snake_case_To_TitleCase(item); // Convert the label to Title Case
+      const dropdownItem = $(`<a class="dropdown-item" href="#">${label}</a>`); // Create dropdown item
+
+      dropdownItem.click(() => onSelect(label)); // Run the given function on click
+      menu.append(dropdownItem); // Add dropdown item to the dropdown menu
+    });
+  }
+
+  function loadSearchFilters(data) {
+    /*
+    * Fetch and store the data from the API endpoint (data)
+    * Set the default search value to `q` from the API
+    * Populate the `topic` dropdown and set the default value to `topic` from the API
+    * Populate the `sort by` dropdown and set the default value to `sort` from the API
+    * Set each dropdown menu item to set itself as that dropdown's value on click
+    * Run the callback function (callbackFn)
     */
 
-    // Populate topic dropdown items
-    data.topics.forEach((topic) => {
-      const dropdownItem = $(`<a class="dropdown-item" href="#">${snake_case_To_TitleCase(topic)}</a>`);
-      topicDropdown.find('.dropdown-menu').append(dropdownItem);
+    // Populate both dropdown menus' items
+    populateDropdown(topicDropdown.find('.dropdown-meu'), data.topics, (val) => {
+      // Apply topic filter and reload videos
+      setTopicDropdownValue(val);
+      reloadVideos(data.courses);
     });
 
-    // Populate sort by dropdown items
-    data.sorts.forEach((sort) => {
-      const dropdownItem = $(`<a class="dropdown-item" href="#">${snake_case_To_TitleCase(sort)}</a>`);
-      sortByDropdown.find('.dropdown-menu').append(dropdownItem);
+    populateDropdown(sortByDropdown.find('.dropdown-meu'), data.sorts, (val) => {
+      // Apply sort order  and reload videos
+      setSortByDropdownValue(val);
+      reloadVideos(data.courses);
+    });
+
+    // Apply search query and re-search (reload videos) when search input changes
+    searchInput.change(() => {
+      reloadVideos(data.courses); // I suspect this will cause issues reloading while already loading after a previous change if this runs every time a character is typed or deleted
     });
 
     // Set the search bar's, topic dropdown's, and sort dropdown's default value based on API data
-    searchInput.value = data.q;
-    topicDropdown.find('a > span').text(snake_case_To_TitleCase(data.topic));
-    sortByDropdown.find('a > span').text(snake_case_To_TitleCase(data.sort));
-
-    if (callbackFn) {
-      callbackFn(data.courses, sortValue());
-    }
+    searchInput.val(data.q);
+    setTopicDropdownValue(snake_case_To_TitleCase(data.topic));
+    setSortByDropdownValue(snake_case_To_TitleCase(data.sort));
   }
 
-  function loadVideos(courses, sort) {
+  function reloadVideos(courses) {
+    // todo: unload all videos
+    loadVideos(courses); // load all videos
+  }
+
+  function loadVideos(courses) {
     /* todo:
+    *   Add a loader if one is not there
     *   Get array of videos from API data (courses)
     *   Filter the array of videos to account for the search query and topics filter
     *   Sort the array according to the selected sort order.
     *   Create and inject the HTML cards into the DOM
     *   Remove the loader
     */
+
+    cLoader.remove();
   }
 
   function loadCourses(data) {
@@ -251,7 +278,8 @@ $(document).ready(() => {
     *   Remove the loader
     */
 
-    loadSearchFilters(data, loadVideos);
+    loadSearchFilters(data);
+    loadVideos(data.courses);
   }
 
   /* Courses Loader */
