@@ -95,16 +95,10 @@ Daniel Stelljes: [Zytronium](https://github.com/Zytronium)
 - [X] ​6. Host to Pages! (5/5 pts)
 
 
-- [ ] **Everything Done ✓** (100/100 pts) - 100%
-
->### Progress Goals:
->Friday: 25% (task 1-2) ✓  
-Saturday/Sunday: 50-70% (task 2-3) ✓  
-Monday: 80-100% (task 5-6) ✓  
-<strong>Tuesday: 100% (task 6)</strong> ✓  
+- [X] **Everything Done ✓** (100/100 pts) - 100%
 
 ---
 
 [Click here to view on GitHub Pages.](https://zytronium.github.io/atlas-smiling-school-javascript/homepage)
 
-<em style="color: darkred">I survived the horror of the Atlas School Annex, April 13th</em>
+<em style="color: darkred">I survived the horror of the Atlas School Annex, the night of April 13th</em>

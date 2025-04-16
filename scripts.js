@@ -200,10 +200,14 @@ $(document).ready(() => {
     sortByDropdown.find('a > span').text(value);
   }
 
+  window.playVideo = function() {
+    window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+  }
+
   function getCourseCardHTML(course) {
     return $(`
       <div class="col-12 col-sm-4 col-lg-3 d-flex justify-content-center">
-              <div class="card">
+              <div class="card"">
                 <img
                   src="${course.thumb_url}"
                   class="card-img-top"
@@ -215,6 +219,8 @@ $(document).ready(() => {
                     alt="Play"
                     width="64px"
                     class="align-self-center play-overlay"
+                    style="cursor: pointer;"
+                    onclick="playVideo()"
                   />
                 </div>
                 <div class="card-body">
